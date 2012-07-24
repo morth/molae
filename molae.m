@@ -16,7 +16,9 @@
 
 - (void)handleEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
+#if DEBUG
 	NSLog(@"%s %@", __func__, event);
+#endif
 	AEDisposeDesc(descPtr);
 	AEDuplicateDesc([event aeDesc], descPtr);
 
@@ -77,21 +79,29 @@
 
 int get_launch_appleevent(AEDesc *dst, double maxwait)
 {
-	NSAutoreleasePool *pool;
-	molae *m;
+	int res = -1;
+	NSAutoreleasePool *pool = nil;
+	molae *m = nil;
 
 	AEInitializeDesc(dst);
 
-	if (!NSApplicationLoad())
-		return -1;
-       
-	pool = [[NSAutoreleasePool alloc] init];
-	m = [[molae alloc] initWithDescPtr:dst];
+	@try
+	{
+		if (NSApplicationLoad())
+		{
+			pool = [[NSAutoreleasePool alloc] init];
+			m = [[molae alloc] initWithDescPtr:dst];
 
-	[m grabEvent:maxwait];
+			[m grabEvent:maxwait];
+			res = 0;
+		}
+	}
+	@catch (...)
+	{
+	}
 
 	[m release];
 	[pool release];
-	return 0;
+	return res;
 }
 
