@@ -77,6 +77,7 @@
 	[manager removeEventHandlerForEventClass:kCoreEventClass andEventID:kAEOpenDocuments];
 	[manager removeEventHandlerForEventClass:kCoreEventClass andEventID:kAEPrintDocuments];
 	[manager removeEventHandlerForEventClass:kCoreEventClass andEventID:kAEOpenContents];
+	[manager removeEventHandlerForEventClass:kInternetEventClass andEventID:kAEGetURL];
 
 	[super dealloc];
 }
